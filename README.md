@@ -3,6 +3,29 @@
 Ein Aquarium in Pixel-Art: Fische kaufen und benennen, Deko, Pflanzen, Hintergründe, Effekte,
 Album, Erfolge – und ein **Multiplayer**, bei dem mehrere Leute dasselbe Becken sehen und bearbeiten.
 
+Alles steckt in einer einzigen Datei (`index.html`), ohne Build-Schritt und ohne eigenen Server.
+
+## Auf GitHub Pages veröffentlichen
+
+1. Auf GitHub ein neues Repository anlegen (z. B. `pixel-aquarium`, öffentlich).
+2. `index.html` und diese `README.md` hochladen (**Add file → Upload files**).
+3. **Settings → Pages → Build and deployment**: *Deploy from a branch*, Branch `main`, Ordner `/ (root)`, speichern.
+4. Nach etwa einer Minute ist die Seite erreichbar unter  
+   `https://<dein-name>.github.io/pixel-aquarium/`
+
+## Weitere Funktionen
+
+- **Lebendige Fische:** Streicheln (Fisch zweimal antippen), Raubfische verscheuchen Kleine, Schwarmverhalten,
+  Zubehör (Hut, Brille, Krone …). Füttern ist komplett optional und bringt nur Bonusmünzen.
+- **Wirtschaft:** Münzen durch Füttern, Goldene Blasen, treibende Schatztruhen, Tagesbonus, Tägliche Aufträge,
+  Erfolge und **Upgrades** (mehr Platz, mehr Einkommen, mehr Futter-Bonus, mehr Goldblasen).
+- **Gestaltung:** über 60 Fische, über 60 Deko-Objekte in Größe 1–4, Hintergründe, Böden, Rahmen, Kulissen,
+  Effekte, Tag/Nacht/Auto-Zyklus, Foto-Modus, Vollbild, Musik.
+- **Shop-Suche** über alle Kategorien, Album und Statistik.
+- **Spielstand sichern:** Knopf *Spielstand* erzeugt einen Code, mit dem du dein Becken in einem anderen
+  Browser oder in der Version auf claude.ai wieder laden kannst.
+- **Tastenkürzel:** `F` Vollbild, `N` Tag/Nacht/Auto, `P` Foto, `Esc` schließen.
+
 ## Multiplayer
 
 Der Multiplayer läuft **direkt zwischen den Browsern** (WebRTC über [PeerJS](https://peerjs.com)).
