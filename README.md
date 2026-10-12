@@ -3,8 +3,6 @@
 Ein Aquarium in Pixel-Art: Fische kaufen und benennen, Deko, Pflanzen, Hintergründe, Effekte,
 Album, Erfolge – und ein **Multiplayer**, bei dem mehrere Leute dasselbe Becken sehen und bearbeiten.
 
-Alles steckt in einer einzigen Datei (`index.html`), ohne Build-Schritt und ohne eigenen Server.
-
 ## Multiplayer
 
 Der Multiplayer läuft **direkt zwischen den Browsern** (WebRTC über [PeerJS](https://peerjs.com)).
