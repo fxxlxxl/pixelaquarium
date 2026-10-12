@@ -5,14 +5,6 @@ Album, Erfolge – und ein **Multiplayer**, bei dem mehrere Leute dasselbe Becke
 
 Alles steckt in einer einzigen Datei (`index.html`), ohne Build-Schritt und ohne eigenen Server.
 
-## Auf GitHub Pages veröffentlichen
-
-1. Auf GitHub ein neues Repository anlegen (z. B. `pixel-aquarium`, öffentlich).
-2. `index.html` und diese `README.md` hochladen (**Add file → Upload files**).
-3. **Settings → Pages → Build and deployment**: *Deploy from a branch*, Branch `main`, Ordner `/ (root)`, speichern.
-4. Nach etwa einer Minute ist die Seite erreichbar unter  
-   `https://<dein-name>.github.io/pixel-aquarium/`
-
 ## Multiplayer
 
 Der Multiplayer läuft **direkt zwischen den Browsern** (WebRTC über [PeerJS](https://peerjs.com)).
