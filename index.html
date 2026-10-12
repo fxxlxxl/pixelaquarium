@@ -41,9 +41,9 @@ button:focus-visible,input:focus-visible{outline:3px solid #39d6ff;outline-offse
 #tank.fs #cv,#tank.fs #lab{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));width:min(100vw,calc(100dvh*16/9));height:min(100dvh,calc(100vw*9/16))}
 #tank.fs #fsx{display:block;position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:5;opacity:.75}
 </style></head><body><main>
-<header><h1>Pixel-Aquarium</h1><div id="coins"><i class="coin"></i><span id="cn">0</span></div></header>
+<header><div><h1>Pixel-Aquarium</h1><div id="slotn" style="font-size:9px;opacity:.7;margin-top:4px"></div></div><div id="coins"><i class="coin"></i><span id="cn">0</span></div></header>
 <div id="tank"><canvas id="cv" aria-label="Aquarium"></canvas><div id="lab"></div><button id="fsx">Beenden ✕</button></div>
-<div id="set"><label>Tempo <input type="range" id="spd" min=".3" max="1.6" step=".1" value="1"></label><button id="nt">Zeit: Tag</button><button id="nmb">Namen</button><button id="rain">Futterregen</button><button id="dbn">Tagesbonus</button><button id="pho">Foto</button><button id="mub">Musik: aus</button><button id="sav">Spielstand</button><button id="snb">Ton: aus</button><button id="fsb">Vollbild</button><button id="mpb">Multiplayer</button></div>
+<div id="set"><label>Tempo <input type="range" id="spd" min=".3" max="1.6" step=".1" value="1"></label><button id="nt">Zeit: Tag</button><button id="nmb">Namen</button><button id="rain">Futterregen</button><button id="dbn">Tagesbonus</button><button id="pho">Foto</button><button id="mub">Musik: aus</button><button id="sav">Spielstände</button><button id="snb">Ton: aus</button><button id="fsb">Vollbild</button><button id="mpb">Multiplayer</button></div>
 <div id="mp" hidden></div>
 <div id="sel"></div>
 <div class="tabs"><button class="on" data-t="f">Fische</button><button data-t="r">Seltene</button><button data-t="p">Pflanzen</button><button data-t="d">Deko</button><button data-t="b">Hintergründe</button><button data-t="fl">Boden</button><button data-t="fr">Rahmen</button><button data-t="ef">Effekte</button><button data-t="fd">Futter</button><button data-t="dex">Album</button><button data-t="ach">Erfolge</button><button data-t="ku">Kulisse</button><button data-t="up">Upgrades</button><button data-t="qu">Aufträge</button><button data-t="st">Statistik</button></div>
@@ -51,7 +51,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #39d6ff;outline-offse
 <div id="shop"></div><div id="msg"></div>
 </main>
 <script>
-const W=320,H=180,SY=156,K='pixaq1',E=id=>document.getElementById(id),cv=E('cv'),c=cv.getContext('2d'),LAB=E('lab');
+const W=320,H=180,SY=156,SLOT=(()=>{try{return localStorage.getItem('pxaq-cur')||'s1'}catch(e){return 's1'}})(),LK=(b,i=SLOT)=>i=='s1'?b:b+'-'+i,K=LK('pixaq1'),E=id=>document.getElementById(id),cv=E('cv'),c=cv.getContext('2d'),LAB=E('lab');
 cv.width=W;cv.height=H;
 const rnd=(a,b)=>a+Math.random()*(b-a),cl=(v,a,b)=>Math.max(a,Math.min(b,v));
 const P={k:'#1a1530',w:'#f4f4ff',e:'#10101a',o:'#ff8f1f',O:'#d95a0f',y:'#ffd84a',Y:'#d9a21b',b:'#3b8cff',B:'#1d4fb8',c:'#39d6ff',r:'#e8384f',p:'#ff7eb6',P:'#c4457f',g:'#4fd16a',G:'#1f8a4a',n:'#8a5a2f',N:'#5a3519',s:'#9aa3b5',S:'#5d6578',m:'#c9a0ff'};
@@ -228,7 +228,7 @@ for(let n=0;n<24;n++){x.fillStyle=['#8c93a8','#6b738a','#a8b0c2'][n%3];x.fillRec
 x.fillStyle='rgba(0,0,0,.18)';x.fillRect(0,H-4,W,4);
 x.fillStyle='#4a5066';x.fillRect(19,SY-2,6,4);x.fillStyle='#8a92aa';x.fillRect(20,SY-2,4,2);if(q.st)for(let n=0;n<40;n++){x.fillStyle='rgba(255,255,255,.7)';x.fillRect(r()*W|0,r()*(SY-70)|0,1,1)}}
 let coins=100,fish=[],decor=[],foods=[],bubs=[],sel=null,drag=null,inc=0,last=0,mt=0;
-function save(){if(net)return push();try{localStorage.setItem(K,JSON.stringify(snap()))}catch(e){}}
+function save(){if(net)return push();if(NOSAVE)return;try{localStorage.setItem(K,JSON.stringify(snap()))}catch(e){}}
 function ui(){E('cn').textContent=coins|0;document.querySelectorAll('#shop button').forEach(b=>b.disabled=+b.dataset.p>coins)}
 function earn(n){coins+=n;if(n>0)STA.earn+=n;ui()}
 function say(t){E('msg').textContent=t;clearTimeout(mt);mt=setTimeout(()=>E('msg').textContent='',3500)}
@@ -380,15 +380,15 @@ let mus=0,mt2=0;
 function note(f,d,v){try{AC=AC||new AudioContext();const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.4);g.gain.exponentialRampToValueAtTime(.0005,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d)}catch(e){}}
 function muse(){clearInterval(mt2);if(!mus)return;const sc=[196,220,261.6,293.7,329.6,392,440,523.3],p=()=>{note(sc[Math.random()*sc.length|0],4,.025);if(Math.random()<.5)note(sc[Math.random()*sc.length|0]/2,5,.02)};p();mt2=setInterval(p,2200)}
 function sset(){try{localStorage.setItem('pxaq-set',JSON.stringify({s:SPD,n:NM,t:snd,l:LAB.hidden}))}catch(e){}}
-function dayB(){try{return JSON.parse(localStorage.getItem('pxaq-day'))||{}}catch(e){return{}}}
+function dayB(){try{return JSON.parse(localStorage.getItem(LK('pxaq-day')))||{}}catch(e){return{}}}
 function bonusUI(){const t=new Date().toDateString(),e=E('dbn');e.disabled=dayB().d==t;e.textContent=e.disabled?'Bonus geholt':'Tagesbonus'}
-function initX(){try{(JSON.parse(localStorage.getItem('pxaq-un'))||[]).forEach(x=>UN.add(x))}catch(e){}try{const q=JSON.parse(localStorage.getItem('pxaq-set'));if(q){SPD=q.s||1;E('spd').value=SPD;NM=q.n|0;ntl();snd=!!q.t;E('snb').textContent=snd?'Ton: an':'Ton: aus';LAB.hidden=!!q.l}}catch(e){}
+function initX(){try{E('slotn').textContent='Spielstand: '+slots().find(s=>s.id==SLOT).name}catch(e){}try{(JSON.parse(localStorage.getItem(LK('pxaq-un')))||[]).forEach(x=>UN.add(x))}catch(e){}try{const q=JSON.parse(localStorage.getItem('pxaq-set'));if(q){SPD=q.s||1;E('spd').value=SPD;NM=q.n|0;ntl();snd=!!q.t;E('snb').textContent=snd?'Ton: an':'Ton: aus';LAB.hidden=!!q.l}}catch(e){}
 E('rain').onclick=()=>{let n=0;for(let i=0;i<6;i++){const fd=FD[sk.fd];if(foods.length<14&&coins>=fd.cost){coins-=fd.cost;n++;dropFood({x:rnd(20,W-20),y:rnd(3,20),p:rnd(0,6),l:8,k:sk.fd,by:me})}}ui();if(!n)say('Zu wenig M\u00fcnzen f\u00fcr Futter.')};
-E('dbn').onclick=()=>{const t=new Date().toDateString(),b=dayB();if(b.d==t)return;const s=b.d==new Date(Date.now()-864e5).toDateString()?(b.s||0)+1:1,r=30+Math.min(s,7)*10;earn(r);try{localStorage.setItem('pxaq-day',JSON.stringify({d:t,s}))}catch(e){}sfx(880,.2);say('Tagesbonus +'+r+' M\u00fcnzen (Serie: '+s+' Tage)');bonusUI()};
+E('dbn').onclick=()=>{const t=new Date().toDateString(),b=dayB();if(b.d==t)return;const s=b.d==new Date(Date.now()-864e5).toDateString()?(b.s||0)+1:1,r=30+Math.min(s,7)*10;earn(r);try{localStorage.setItem(LK('pxaq-day'),JSON.stringify({d:t,s}))}catch(e){}sfx(880,.2);say('Tagesbonus +'+r+' M\u00fcnzen (Serie: '+s+' Tage)');bonusUI()};
 E('pho').onclick=()=>{const o=mel('div'),i=mel('img');i.src=cv.toDataURL();i.style.cssText='max-width:94vw;max-height:76vh;image-rendering:pixelated;border:4px solid #fff';o.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(5,8,28,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;text-align:center;padding:12px';o.id='phov';o.append(i,mel('span','Foto: Rechtsklick oder lange tippen zum Speichern'),mel('button','Schlie\u00dfen',()=>o.remove()));document.body.append(o)};
 E('mub').onclick=()=>{mus=!mus;E('mub').textContent=mus?'Musik: an':'Musik: aus';muse()};E('sav').onclick=sbox;E('shq').oninput=()=>{const v=E('shq').value.toLowerCase().trim();if(v)gs(v);else shop(CT)};
 bonusUI();
-addEventListener('keydown',e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName))return;const k=e.key.toLowerCase();if(k=='f')fsm(!E('tank').classList.contains('fs'));else if(k=='n')E('nt').click();else if(k=='p')E('pho').click();else if(k=='escape'){sel=null;selUI();for(const id of ['phov','sbox']){const o=E(id);o&&o.remove()}}})}
+addEventListener('keydown',e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName))return;const k=e.key.toLowerCase();if(k=='f')fsm(!E('tank').classList.contains('fs'));else if(k=='n')E('nt').click();else if(k=='p')E('pho').click();else if(k=='escape'){sel=null;selUI();for(const id of ['cbox','phov','sbox']){const o=E(id);o&&o.remove()}}})}
 let NM=0,nl=0;function ntl(){E('nt').textContent='Zeit: '+['Tag','Nacht','Auto'][NM]}
 const upg={cap:0,inc:0,hun:0,gold:0},STA={fed:0,earn:0,bought:0,pets:0,bub:0,time:0};
 const UP={cap:{n:'Beckenerweiterung',d:'+10 Fische Platz',max:5,base:120},inc:{n:'M\u00fcnz-Magnet',d:'+10% Einkommen',max:8,base:80},hun:{n:'Futter-Bonus',d:'+15% M\u00fcnzen pro gefressenem Futter',max:5,base:100},gold:{n:'Gl\u00fccksbringer',d:'Goldene Blasen 15% fr\u00fcher',max:5,base:90}};
@@ -401,8 +401,8 @@ function ups(){const SH=E('shop');SH.innerHTML='';tm('up');for(const k in UP){co
 function stats(){const SH=E('shop');SH.innerHTML='';tm('st');const h=Math.floor(STA.time/3600),m=Math.floor(STA.time/60)%60,val=fish.reduce((a,f)=>a+FS[f.t].$,0)+decor.reduce((a,d)=>a+D[d.t].$,0);
 [['Spielzeit',h+' h '+m+' min'],['Gef\u00fctterte Fische',STA.fed],['Verdiente M\u00fcnzen',Math.round(STA.earn)],['K\u00e4ufe',STA.bought],['Gestreichelt',STA.pets],['Goldene Blasen',STA.bub],['Truhen ge\u00f6ffnet',STA.chest||0],['Freigeschaltet',unc()],['Fische im Becken',fish.length+' / '+CAPF()],['Deko im Becken',decor.length],['Arten entdeckt',[...seen].filter(k=>FS[k]).length+' / '+Object.keys(FS).length],['Beckenwert',val+' M\u00fcnzen']].forEach(([a,b])=>{const c=mel('div');c.className='card';c.append(mel('span',a),mel('b',String(b)));SH.append(c)});ui()}
 const QL=[['fed',15,40],['earn',150,40],['pets',5,30],['bub',2,50],['bought',2,30],['fed',30,80],['earn',500,90]],QN={fed:'F\u00fcttere %d Mal',earn:'Verdiene %d M\u00fcnzen',pets:'Streichle %d Fische',bub:'Fange %d Goldene Blasen',bought:'Kaufe %d Dinge'};
-function qsv(q){try{localStorage.setItem('pxaq-q',JSON.stringify(q))}catch(e){}}
-function qst(){let q;try{q=JSON.parse(localStorage.getItem('pxaq-q'))}catch(e){}const d=Math.floor(Date.now()/864e5);if(!q||q.d!=d){q={d,s:{fed:STA.fed,earn:STA.earn,pets:STA.pets,bub:STA.bub,bought:STA.bought},c:[]};qsv(q)}return q}
+function qsv(q){try{localStorage.setItem(LK('pxaq-q'),JSON.stringify(q))}catch(e){}}
+function qst(){let q;try{q=JSON.parse(localStorage.getItem(LK('pxaq-q')))}catch(e){}const d=Math.floor(Date.now()/864e5);if(!q||q.d!=d){q={d,s:{fed:STA.fed,earn:STA.earn,pets:STA.pets,bub:STA.bub,bought:STA.bought},c:[]};qsv(q)}return q}
 function quests(){const SH=E('shop');SH.innerHTML='';tm('qu');const q=qst();
 [q.d%7,(q.d+2)%7,(q.d+4)%7].forEach(i=>{const[k,g,rw]=QL[i],p=Math.min(g,Math.floor(STA[k]-(q.s[k]||0))),dn=q.c.includes(i),card=mel('div'),bt=mel('button',dn?'Erledigt':p>=g?'Abholen +'+rw:'Offen',()=>{q.c.push(i);qsv(q);earn(rw);sfx(880,.2);quests()});card.className='card';bt.dataset.p=!dn&&p>=g?0:1e12;card.append(mel('b',QN[k].replace('%d',g)),mel('span',p+' / '+g),bt);SH.append(card)});ui()}
 const HP=[];function hearts(x,y){for(let i=0;i<3;i++)HP.push({x:x+rnd(-6,6),y:y-4,l:1.4,v:rnd(10,18)})}
@@ -417,11 +417,11 @@ function thumb(g,q){if(q.s)g.drawImage(q.s,40-q.s.width>>1,36-q.s.height>>1);els
 const CATS=()=>[['f',FS],['d',D],['b',BG],['fl',FL],['fr',FR],['ef',EF],['fd',FD],['ku',KU],['ac',ACC]];
 function pool(){const o=[];for(const[c,O]of CATS())for(const k in O)if(!UN.has(c+':'+k))o.push([c,k]);return o}
 function unc(){let t=0;for(const[c,O]of CATS())t+=Object.keys(O).length;return(t-pool().length)+' / '+t}
-function usv(){try{localStorage.setItem('pxaq-un',JSON.stringify([...UN]))}catch(e){}}
+function usv(){try{localStorage.setItem(LK('pxaq-un'),JSON.stringify([...UN]))}catch(e){}}
 function rar(q){const p=q.$||0;return p>=200?['Legend\u00e4r','#ffcf3a']:p>=100?['Episch','#c07bff']:p>=40?['Selten','#4aa8ff']:['Gew\u00f6hnlich','#cfd6e8']}
 let LBX=null,LBS=null;const lbx=()=>LBX||(LBX=hq(rcv(D.chest.im,{s:'y',S:'Y'}),2,'w')),lbs=()=>LBS||(LBS=rcv(D.chest.im,{s:'y',S:'Y'}));
-let ev=null,LOOT=0,evDue=0;function evSet(){evDue=Date.now()+rnd(180,300)*1000;try{localStorage.setItem('pxaq-ev',evDue)}catch(e){}}
-try{evDue=+localStorage.getItem('pxaq-ev')||0}catch(e){}if(!evDue)evSet();else evDue=Math.min(Math.max(evDue,Date.now()+8000),Date.now()+300000);
+let ev=null,LOOT=0,evDue=0;function evSet(){evDue=Date.now()+rnd(180,300)*1000;try{localStorage.setItem(LK('pxaq-ev'),evDue)}catch(e){}}
+try{evDue=+localStorage.getItem(LK('pxaq-ev'))||0}catch(e){}if(!evDue)evSet();else evDue=Math.min(Math.max(evDue,Date.now()+8000),Date.now()+300000);
 function evtick(dt){if(Date.now()>=evDue&&!ev&&!LOOT){ev={x:-20,y:rnd(40,100),v:rnd(13,18)};evSet()}
 if(ev){ev.x+=ev.v*dt;const s=lbs(),x=Math.round(ev.x),y=Math.round(ev.y+Math.sin(T*2)*3),fl=(T*7|0)%2,hw=s.width>>1,hh=s.height>>1;
 for(let r=3;r>0;r--){c.fillStyle='rgba(255,220,90,.10)';c.fillRect(x-hw-r*3,y-hh-r*3,s.width+r*6,s.height+r*6)}
@@ -454,9 +454,35 @@ for(let i=Pt.length-1;i>=0;i--){const a=Pt[i];a.vy+=240*dt;a.x+=a.vx*dt;a.y+=a.v
 if(t>2.5&&!f3){f3=1;tx.style.opacity=1;bt.disabled=false;sfx(880,.25,'triangle')}
 requestAnimationFrame(step)}
 requestAnimationFrame(step);o.addEventListener('click',e=>{if(e.target===o&&!bt.disabled)cl_()})}
-function sbox(){const o=mel('div'),t=mel('textarea'),m=mel('span','Spielstand-Code: zum Sichern kopieren, zum Laden einen Code einf\u00fcgen.');t.value=btoa(unescape(encodeURIComponent(JSON.stringify(snap()))));t.style.cssText='width:min(92vw,560px);height:140px;font:10px monospace';o.id='sbox';o.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(5,8,28,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#fff;text-align:center;padding:12px';
-o.append(m,t,mel('button','Kopieren',()=>{t.select();try{navigator.clipboard.writeText(t.value);m.textContent='Kopiert!'}catch(e){}}),mel('button','Code laden',()=>{try{const j=JSON.parse(decodeURIComponent(escape(atob(t.value.trim()))));if(!Array.isArray(j.f)||!Array.isArray(j.d))throw 0;localStorage.setItem(K,JSON.stringify(j));location.reload()}catch(e){m.textContent='Ung\u00fcltiger Code.'}}),mel('button','Schlie\u00dfen',()=>o.remove()));document.body.append(o)}
-function snap(){return{c:coins|0,f:fish.map(f=>[f.t,f.name,f.ac||0]),d:decor.map(d=>[d.t,Math.round(d.x),Math.round(d.y),d.z]),b:bgk,o:own,k:sk,w:sown,q:[...seen],z:[...claimed],u:upg,st:STA,un:[...UN]}}
+let NOSAVE=0;
+function slots(){let l;try{l=JSON.parse(localStorage.getItem('pxaq-slots'))}catch(e){}if(!Array.isArray(l)||!l.length)l=[{id:'s1',name:'Spielstand 1'}];if(!l.some(s=>s.id==SLOT))l.push({id:SLOT,name:'Spielstand '+(l.length+1)});return l}
+function slsv(l){try{localStorage.setItem('pxaq-slots',JSON.stringify(l))}catch(e){}}
+function slInfo(id){try{const j=JSON.parse(localStorage.getItem(LK('pixaq1',id)));if(!j)return'neu, noch leer';return(j.f||[]).length+' Fische \u00b7 '+(j.d||[]).length+' Deko \u00b7 '+(j.c|0)+' M\u00fcnzen'+(j.ts?' \u00b7 '+new Date(j.ts).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'')}catch(e){return''}}
+function slGo(id){if(!net)save();try{localStorage.setItem('pxaq-cur',id)}catch(e){}location.reload()}
+function slNew(name){const l=slots(),id='s'+Date.now().toString(36);l.push({id,name:(name||'').trim().slice(0,20)||'Spielstand '+(l.length+1)});slsv(l);slGo(id)}
+function slDel(id){const l=slots().filter(s=>s.id!=id);if(id==SLOT)NOSAVE=1;for(const b of['pixaq1','pxaq-un','pxaq-q','pxaq-day','pxaq-ev']){try{localStorage.removeItem(LK(b,id))}catch(e){}}
+if(!l.length)l.push({id:'s1',name:'Spielstand 1'});slsv(l);if(id==SLOT){try{localStorage.setItem('pxaq-cur',l[0].id)}catch(e){}location.reload()}else sbox()}
+function cbox(text,yes){const o=mel('div'),p=mel('div'),r=mel('div'),b1=mel('button','Abbrechen',()=>o.remove()),b2=mel('button','Endg\u00fcltig l\u00f6schen',()=>{o.remove();yes()});o.id='cbox';
+o.style.cssText='position:fixed;inset:0;z-index:400;background:rgba(3,4,20,.8);display:flex;align-items:center;justify-content:center;padding:12px';
+p.style.cssText='background:var(--panel);color:var(--ink);border:4px solid #e8384f;padding:16px;max-width:420px;text-align:center;display:flex;flex-direction:column;gap:12px;line-height:1.7';r.style.cssText='display:flex;gap:10px;justify-content:center;flex-wrap:wrap';b2.style.background='#e8384f';b2.style.color='#fff';
+r.append(b1,b2);p.append(mel('b','Wirklich l\u00f6schen?'),mel('span',text),r);o.append(p);(document.fullscreenElement||document.body).append(o);b1.focus()}
+function sbox(){const old=E('sbox');if(old)old.remove();if(!net)save();const l=slots();slsv(l);
+const o=mel('div'),bx=mel('div'),m=mel('span'),t=mel('textarea');o.id='sbox';
+o.style.cssText='position:fixed;inset:0;z-index:200;background:rgba(5,8,28,.92);display:flex;align-items:center;justify-content:center;padding:10px';
+bx.style.cssText='background:var(--panel);color:var(--ink);border:4px solid var(--line);padding:14px;width:min(94vw,680px);max-height:92vh;overflow:auto;display:flex;flex-direction:column;gap:10px';bx.append(mel('b','Spielst\u00e4nde'));
+for(const s of l){const row=mel('div'),nm=mel('input'),inf=mel('span',slInfo(s.id)),cur=s.id==SLOT;
+row.style.cssText='display:flex;gap:8px;flex-wrap:wrap;align-items:center;border:3px solid '+(cur?'#39d6ff':'var(--line)')+';padding:8px';nm.value=s.name;nm.maxLength=20;nm.setAttribute('aria-label','Name des Spielstands');nm.style.width='170px';
+nm.onchange=()=>{const a=slots(),x=a.find(z=>z.id==s.id);if(x){x.name=nm.value.trim()||'Spielstand';slsv(a);if(cur)E('slotn').textContent='Spielstand: '+x.name}};inf.style.flex='1 1 160px';
+const go=mel('button',cur?'Aktiv':'Laden',()=>slGo(s.id)),del=mel('button','L\u00f6schen',()=>cbox('\u201e'+(nm.value||s.name)+'\u201c ('+slInfo(s.id)+') geht dabei verloren. Das kann nicht r\u00fcckg\u00e4ngig gemacht werden.',()=>slDel(s.id)));go.disabled=cur;del.style.background='#ff8a8a';row.append(nm,inf,go,del);bx.append(row)}
+const nr=mel('div'),ni=mel('input');nr.style.cssText='display:flex;gap:8px;flex-wrap:wrap;align-items:center';ni.placeholder='Name (optional)';ni.maxLength=20;ni.setAttribute('aria-label','Name f\u00fcr neuen Spielstand');nr.append(ni,mel('button','Neuer Spielstand',()=>slNew(ni.value)));bx.append(nr,mel('hr'));
+m.className='msg';m.style.fontSize='9px';m.textContent='Code: zum Sichern kopieren. Zum Laden einen Code einf\u00fcgen, er wird als neuer Spielstand angelegt.';
+t.value=btoa(unescape(encodeURIComponent(JSON.stringify(snap()))));t.style.cssText='width:100%;height:90px;font:10px monospace';
+const br=mel('div');br.style.cssText='display:flex;gap:8px;flex-wrap:wrap';
+br.append(mel('button','Kopieren',()=>{t.select();try{navigator.clipboard.writeText(t.value);m.textContent='Kopiert!'}catch(e){}}),
+mel('button','Als neuen Spielstand laden',()=>{try{const j=JSON.parse(decodeURIComponent(escape(atob(t.value.trim()))));if(!Array.isArray(j.f)||!Array.isArray(j.d))throw 0;const a=slots(),id='s'+Date.now().toString(36);a.push({id,name:'Import '+a.length});slsv(a);localStorage.setItem(LK('pixaq1',id),JSON.stringify(j));slGo(id)}catch(e){m.textContent='Ung\u00fcltiger Code.'}}),
+mel('button','Schlie\u00dfen',()=>o.remove()));
+bx.append(m,t,br);o.append(bx);o.addEventListener('click',e=>{if(e.target===o)o.remove()});document.body.append(o)}
+function snap(){return{c:coins|0,f:fish.map(f=>[f.t,f.name,f.ac||0]),d:decor.map(d=>[d.t,Math.round(d.x),Math.round(d.y),d.z]),b:bgk,o:own,k:sk,w:sown,q:[...seen],z:[...claimed],u:upg,st:STA,un:[...UN],ts:Date.now()}}
 function nite(){if(nl<.02)return;c.fillStyle='rgba(8,10,56,'+(.42*nl)+')';c.fillRect(0,0,W,H);for(const d of decor){const q=D[d.t];if(q.gl)for(let r=3;r>0;r--){const s=r*7;c.fillStyle='rgba(255,236,140,.13)';c.fillRect(Math.round(d.x-s),Math.round(d.y-dsz(d)[1]*.6-s*.8),s*2,Math.round(s*1.6))}}}
 const pt=e=>{const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H}};
 cv.onpointerdown=e=>{const p=pt(e);let h=0;if(ev&&Math.abs(p.x-ev.x)<(lbs().width>>1)+10&&Math.abs(p.y-ev.y)<(lbs().height>>1)+12){ev=null;openChest();return}

@@ -22,8 +22,10 @@ Alles steckt in einer einzigen Datei (`index.html`), ohne Build-Schritt und ohne
 - **Gestaltung:** über 60 Fische, über 60 Deko-Objekte in Größe 1–4, Hintergründe, Böden, Rahmen, Kulissen,
   Effekte, Tag/Nacht/Auto-Zyklus, Foto-Modus, Vollbild, Musik.
 - **Shop-Suche** über alle Kategorien, Album und Statistik.
-- **Spielstand sichern:** Knopf *Spielstand* erzeugt einen Code, mit dem du dein Becken in einem anderen
-  Browser oder in der Version auf claude.ai wieder laden kannst.
+- **Mehrere Spielstände:** Im Menü *Spielstände* kannst du beliebig viele Becken anlegen, umbenennen, wechseln und
+  löschen (mit Sicherheitsabfrage). Jeder Spielstand hat eigene Münzen, Freischaltungen, Aufträge und Tagesbonus.
+- **Sichern und Importieren:** Das Menü erzeugt einen Code, mit dem du ein Becken in einem anderen Browser oder in
+  der Version auf claude.ai wieder laden kannst. Importierte Codes landen als neuer Spielstand und überschreiben nichts.
 - **Tastenkürzel:** `F` Vollbild, `N` Tag/Nacht/Auto, `P` Foto, `Esc` schließen.
 
 ## Multiplayer
